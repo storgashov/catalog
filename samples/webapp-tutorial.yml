@@ -13,8 +13,8 @@ launch:
             action: provisionAmazonVm
             parameters:
                  roleName: web
-                 jcloudsIdentity: $accessKey
-                 jcloudsCredential: $secretKey
+                 jcloudsIdentity: ${accessKey}
+                 jcloudsCredential: ${secretKey}
             output:
                  publicIp: ips
 
