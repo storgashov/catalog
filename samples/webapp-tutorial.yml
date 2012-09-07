@@ -1,3 +1,4 @@
+#this is demo manifest, creates the simplest application on appache
 launch:
     parameters: 
          appPrefix:
@@ -23,10 +24,9 @@ launch:
             parameters:
                 roles: [web]
 
-        - download:
-            action: gitClone
+        - deploy:
+            action: gitCloneWf
             parameters:
-                roles: [web]
                 url: https://github.com/cometera/example-webapp.git
                 targetDirectory: /var/www/${appPrefix}
 
@@ -34,6 +34,38 @@ launch:
         - appUrl:
             description: Url to the application
             value: http://${publicIp}/${appPrefix}
+
+#reusable workflow
+gitCloneWf:
+    parameters:
+        url:
+            description: git workflow
+        targetDirectory:
+            description: where to clone
+    steps:
+        - install-git:
+            action: execrun
+            description: Install git on new machine
+            parameters:
+                phase: "install-git"
+                precedingPhases: ["deploy"]
+                roles: [web]
+                isSudo: true
+                command: 
+                    - "which git || (which yum && sudo yum -y install git-core || sudo apt-get -y --force-yes install git-core) || true"
+        - download-app:
+            action: execrun
+            description: Sample command for cloning git repos
+            parameters:
+                phase: "exec"
+                precedingPhases: ["install-git"]
+                roles: [web]
+                isSudo: true
+                command:
+                    - git
+                    - clone
+                    - ${url}
+                    - ${targetDirectory}
 
 destroy:
     steps:
