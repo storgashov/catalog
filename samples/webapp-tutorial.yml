@@ -46,9 +46,9 @@ gitCloneWf:
         - install-git:
             action: execrun
             description: Install git on new machine
+            phase: "install-git"
+            precedingPhases: ["deploy"]
             parameters:
-                phase: "install-git"
-                precedingPhases: ["deploy"]
                 roles: [web]
                 isSudo: true
                 command: 
@@ -56,9 +56,9 @@ gitCloneWf:
         - download-app:
             action: execrun
             description: Sample command for cloning git repos
+            phase: "exec"
+            precedingPhases: ["install-git"]
             parameters:
-                phase: "exec"
-                precedingPhases: ["install-git"]
                 roles: [web]
                 isSudo: true
                 command:
@@ -71,5 +71,4 @@ destroy:
     steps:
         - undeployEnv:
             action: undeployEnv
-            parameters:
-                phase: destroy
+            phase: destroy
